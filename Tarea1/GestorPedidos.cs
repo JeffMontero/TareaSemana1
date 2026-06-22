@@ -2,13 +2,12 @@
 
 public class GestorPedidos
 {
-    private SqlConnection conexionBD;
+    private readonly IRepositorioPedidos _repositorio;
 
-    public GestorPedidos()
+    // Inyectamos la dependencia
+    public GestorPedidos(IRepositorioPedidos repositorio)
     {
-        string connectionString = @"Server=DESKTOP-VJ244OG;Database=tienda;Trusted_Connection=True;TrustServerCertificate=True;";
-        conexionBD = new SqlConnection(connectionString);
-        conexionBD.Open();
+        _repositorio = repositorio;
     }
 
     public void ProcesarPedido(string nombreCliente, string emailCliente,
@@ -44,15 +43,7 @@ public class GestorPedidos
         double impuesto = (subtotal - descuento) * 0.12;
         double total = subtotal - descuento + impuesto;
 
-        try
-        {
-            SqlCommand cmd = new SqlCommand($"INSERT INTO pedidos (cliente, total) VALUES ('{nombreCliente}', {total})", conexionBD);
-            cmd.ExecuteNonQuery();
-        }
-        catch (SqlException e)
-        {
-            Console.WriteLine("Error al guardar el pedido: " + e.Message);
-        }
+        _repositorio.GuardarPedido(nombreCliente, total);
 
         try
         {
@@ -89,15 +80,7 @@ public class GestorPedidos
             return;
         }
 
-        try
-        {
-            SqlCommand cmd = new SqlCommand($"DELETE FROM pedidos WHERE id={idPedido}", conexionBD);
-            cmd.ExecuteNonQuery();
-        }
-        catch (SqlException e)
-        {
-            Console.WriteLine("Error al cancelar el pedido: " + e.Message);
-        }
+        _repositorio.EliminarPedido(idPedido);
 
         Console.WriteLine("Enviando correo a " + emailCliente + "...");
         Console.WriteLine("Asunto: Cancelacion de pedido");

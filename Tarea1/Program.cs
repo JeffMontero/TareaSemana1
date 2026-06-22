@@ -1,4 +1,5 @@
-﻿using Tarea1.Repositorio;
+﻿using Tarea1.Descuentos;
+using Tarea1.Repositorio;
 
 namespace Tarea1
 {
@@ -16,7 +17,11 @@ namespace Tarea1
             List<int> cantidades = new List<int> { 1, 2 };
 
             Console.WriteLine("--- Iniciando Proceso de Pedido (Refactorizado) ---");
-            gestor.ProcesarPedido("Juan Perez", "juan@example.com", productos, precios, cantidades, "VIP");
+            // Ejemplo: Si el cliente es VIP
+            gestor.ProcesarPedido("Juan", "juan@mail.com", productos, precios, cantidades, new DescuentoVip());
+
+            // Ejemplo: Si el cliente es nuevo
+            gestor.ProcesarPedido("Maria", "maria@mail.com", productos, precios, cantidades, new DescuentoNuevo());
 
             Console.WriteLine("\n--- Iniciando Cancelación de Pedido (Refactorizado) ---");
             gestor.CancelarPedido("Juan Perez", "juan@example.com", 1);

@@ -14,7 +14,7 @@ public class GestorPedidos
                                List<string> nombresProductos,
                                List<double> preciosProductos,
                                List<int> cantidades,
-                               string tipoCliente)
+                               ICalculadorDescuento estrategiaDescuento)
     {
         if (string.IsNullOrWhiteSpace(nombreCliente))
         {
@@ -34,11 +34,7 @@ public class GestorPedidos
             subtotal += preciosProductos[i] * cantidades[i];
         }
 
-        double descuento = 0;
-        if (tipoCliente == "VIP") descuento = subtotal * 0.20;
-        else if (tipoCliente == "FRECUENTE") descuento = subtotal * 0.10;
-        else if (tipoCliente == "REGULAR") descuento = subtotal * 0.05;
-        else if (tipoCliente == "NUEVO") descuento = 0;
+        double descuento = estrategiaDescuento.CalcularDescuento(subtotal);
 
         double impuesto = (subtotal - descuento) * 0.12;
         double total = subtotal - descuento + impuesto;

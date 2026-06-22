@@ -41,26 +41,7 @@ public class GestorPedidos
 
         _repositorio.GuardarPedido(nombreCliente, total);
 
-        try
-        {
-            using (StreamWriter writer = new StreamWriter("factura_" + nombreCliente + ".txt"))
-            {
-                writer.WriteLine("FACTURA");
-                writer.WriteLine("Cliente: " + nombreCliente);
-                for (int i = 0; i < nombresProductos.Count; i++)
-                {
-                    writer.WriteLine($"{nombresProductos[i]} x {cantidades[i]} = ${preciosProductos[i] * cantidades[i]}");
-                }
-                writer.WriteLine($"Subtotal: ${subtotal}");
-                writer.WriteLine($"Descuento: ${descuento}");
-                writer.WriteLine($"Impuesto: ${impuesto}");
-                writer.WriteLine($"TOTAL: ${total}");
-            }
-        }
-        catch (IOException e)
-        {
-            Console.WriteLine("Error al generar la factura: " + e.Message);
-        }
+        GeneradorFactura.Generar(nombreCliente, nombresProductos, cantidades, preciosProductos, subtotal, descuento, impuesto, total);
 
         Console.WriteLine("Enviando correo a " + emailCliente + "...");
         Console.WriteLine("Asunto: Confirmacion de pedido");

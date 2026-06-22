@@ -43,10 +43,7 @@ public class GestorPedidos
 
         GeneradorFactura.Generar(nombreCliente, nombresProductos, cantidades, preciosProductos, subtotal, descuento, impuesto, total);
 
-        Console.WriteLine("Enviando correo a " + emailCliente + "...");
-        Console.WriteLine("Asunto: Confirmacion de pedido");
-        Console.WriteLine("Cuerpo: Estimado " + nombreCliente + ", su pedido por $" + total + " ha sido procesado.");
-        Console.WriteLine("[LOG] Pedido procesado para " + nombreCliente);
+        ServicioNotificaciones.EnviarConfirmacion(emailCliente, nombreCliente, total);
     }
 
     public void CancelarPedido(string nombreCliente, string emailCliente, int idPedido)
@@ -59,8 +56,6 @@ public class GestorPedidos
 
         _repositorio.EliminarPedido(idPedido);
 
-        Console.WriteLine("Enviando correo a " + emailCliente + "...");
-        Console.WriteLine("Asunto: Cancelacion de pedido");
-        Console.WriteLine("Cuerpo: Estimado " + nombreCliente + ", su pedido #" + idPedido + " ha sido cancelado.");
+        ServicioNotificaciones.EnviarNotificacionCancelacion(emailCliente, nombreCliente, idPedido);
     }
 }

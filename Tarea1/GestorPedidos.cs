@@ -28,22 +28,14 @@ public class GestorPedidos
             return;
         }
 
-        double subtotal = 0;
-        for (int i = 0; i < nombresProductos.Count; i++)
-        {
-            subtotal += preciosProductos[i] * cantidades[i];
-        }
+        var totales = CalculadoraFinanciera.CalcularTotales(preciosProductos, cantidades, estrategiaDescuento);
 
-        double descuento = estrategiaDescuento.CalcularDescuento(subtotal);
+        _repositorio.GuardarPedido(nombreCliente, totales.total);
 
-        double impuesto = (subtotal - descuento) * 0.12;
-        double total = subtotal - descuento + impuesto;
+        GeneradorFactura.Generar(nombreCliente, nombresProductos, cantidades, preciosProductos,
+                                 totales.subtotal, totales.descuento, totales.impuesto, totales.total);
 
-        _repositorio.GuardarPedido(nombreCliente, total);
-
-        GeneradorFactura.Generar(nombreCliente, nombresProductos, cantidades, preciosProductos, subtotal, descuento, impuesto, total);
-
-        ServicioNotificaciones.EnviarConfirmacion(emailCliente, nombreCliente, total);
+        ServicioNotificaciones.EnviarConfirmacion(emailCliente, nombreCliente, totales.total);
     }
 
     public void CancelarPedido(string nombreCliente, string emailCliente, int idPedido)
